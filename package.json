@@ -1,0 +1,57 @@
+{
+  "name": "ddys-cli",
+  "version": "0.1.0",
+  "description": "低端影视 API 的官方命令行工具，用于搜索、调试、诊断和生成嵌入代码。",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "ddys": "./bin/ddys.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "bin",
+    "dist",
+    "examples",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node scripts/build.mjs && node scripts/check.mjs && node --test test/*.test.mjs",
+    "prepack": "node scripts/build.mjs && node scripts/check.mjs && node --test test/*.test.mjs"
+  },
+  "keywords": [
+    "ddys",
+    "cli",
+    "movie",
+    "search",
+    "api",
+    "debug",
+    "embed",
+    "worker"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ddysiodev/ddys-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ddysiodev/ddys-cli/issues"
+  },
+  "homepage": "https://github.com/ddysiodev/ddys-cli#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": false
+  }
+}
