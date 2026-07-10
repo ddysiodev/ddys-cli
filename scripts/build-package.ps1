@@ -1,31 +1,44 @@
 param(
-  [string]$Version = "0.1.0",
+  [string]$Version = "",
   [string]$OutputDir = "..\..\releases"
 )
 
 $ErrorActionPreference = "Stop"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
-$ResolvedOutput = Resolve-Path $OutputDir -ErrorAction SilentlyContinue
+$PackageJson = Get-Content -LiteralPath (Join-Path $Root "package.json") -Raw -Encoding UTF8 | ConvertFrom-Json
+if ([string]::IsNullOrWhiteSpace($Version)) {
+  $Version = $PackageJson.version
+}
+if ([string]::IsNullOrWhiteSpace($Version)) {
+  throw "Package version is required."
+}
+
+$OutputPath = $OutputDir
+if (-not [System.IO.Path]::IsPathRooted($OutputPath)) {
+  $OutputPath = Join-Path $Root $OutputPath
+}
+
+$ResolvedOutput = Resolve-Path $OutputPath -ErrorAction SilentlyContinue
 if (-not $ResolvedOutput) {
-  New-Item -ItemType Directory -Path $OutputDir | Out-Null
-  $ResolvedOutput = Resolve-Path $OutputDir
+  New-Item -ItemType Directory -Path $OutputPath | Out-Null
+  $ResolvedOutput = Resolve-Path $OutputPath
 }
 
 $PackageDir = Join-Path $Root "package"
 $ZipName = "ddys-cli-v{0}.zip" -f $Version
 $ZipPath = Join-Path $ResolvedOutput $ZipName
 
+$RootPath = [System.IO.Path]::GetFullPath($Root).TrimEnd("\") + "\"
+$PackagePath = [System.IO.Path]::GetFullPath($PackageDir)
+if (-not $PackagePath.StartsWith($RootPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+  throw "Refusing to create a package outside the CLI root."
+}
+
 if (Test-Path $PackageDir) {
   Remove-Item -LiteralPath $PackageDir -Recurse -Force
 }
 if (Test-Path $ZipPath) {
   Remove-Item -LiteralPath $ZipPath -Force
-}
-
-$RootPath = [System.IO.Path]::GetFullPath($Root)
-$PackagePath = [System.IO.Path]::GetFullPath($PackageDir)
-if (-not $PackagePath.StartsWith($RootPath, [System.StringComparison]::OrdinalIgnoreCase)) {
-  throw "Refusing to create a package outside the CLI root."
 }
 
 $Include = @(

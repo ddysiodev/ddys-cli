@@ -51,7 +51,7 @@ console.log(JSON.stringify({ ok: true, package: 'ddys-cli', files: (await listFi
 async function checkPackage() {
   const pkg = JSON.parse(await read('package.json'));
   assert(pkg.name === 'ddys-cli', 'package name mismatch.');
-  assert(pkg.version === '0.1.0', 'package version mismatch.');
+  assert(/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(pkg.version), 'package version must be semver-like.');
   assert(pkg.type === 'module', 'package must be ESM.');
   assert(pkg.bin?.ddys === './bin/ddys.js', 'ddys bin missing.');
   assert(pkg.exports?.['.']?.import === './dist/index.js', 'root import export must point to dist.');
@@ -64,6 +64,7 @@ async function checkPackage() {
   assert(bin.includes('../dist/index.js'), 'CLI bin must import built dist.');
   const buildPackage = await read('scripts/build-package.ps1');
   assert(buildPackage.includes('ddys-cli-v{0}.zip'), 'release ZIP name must match package.');
+  assert(buildPackage.includes('-Encoding UTF8') && buildPackage.includes('ConvertFrom-Json'), 'release script must read package.json as UTF-8 JSON.');
   assert(buildPackage.includes('Replace("\\", "/")'), 'release ZIP must use portable paths.');
 }
 
@@ -91,7 +92,7 @@ async function checkDocs() {
   const en = await read('README.md');
   const zh = await read('README.zh-CN.md');
   assert(en.includes('[简体中文](README.zh-CN.md)') && zh.includes('[English](README.md)'), 'READMEs must link to each other.');
-  for (const fragment of ['ddys search', 'ddys doctor', 'ddys embed', 'ddys worker-env', 'DDYS_API_KEY', 'DDYS_API_BASE']) {
+  for (const fragment of ['ddys search', 'ddys suggest', 'ddys doctor', 'ddys embed', 'ddys worker-env', 'DDYS_API_KEY', 'DDYS_API_BASE']) {
     assert(en.includes(fragment), `README.md missing ${fragment}.`);
     assert(zh.includes(fragment), `README.zh-CN.md missing ${fragment}.`);
   }

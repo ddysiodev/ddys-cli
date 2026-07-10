@@ -6,7 +6,7 @@ Official command-line tool for the DDYS API. It is meant for site owners and dev
 
 ## Features
 
-- Search, latest, hot, movie detail, sources, related, comments, calendar, dictionaries, collections, shares, requests, activities, user, and me commands.
+- Search, suggestions, latest, hot, movie detail, sources, related, comments, calendar, dictionaries, collections, shares, requests, activities, user, and me commands.
 - Authenticated write commands for request creation, comments, invalid-resource reports, follow, and unfollow.
 - Raw API caller for debugging any `/api/v1` path.
 - `ddys doctor` checks API or Worker proxy health.
@@ -33,6 +33,7 @@ node packages/cli/bin/ddys.js search matrix
 
 ```bash
 ddys search matrix --limit 5
+ddys suggest matrix
 ddys latest --format json
 ddys hot --type movie --limit 10
 ddys movie i-robot

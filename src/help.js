@@ -9,6 +9,7 @@ Usage:
 
 Read commands:
   search <keyword>          Search DDYS
+  suggest <keyword>         Show search suggestions
   latest                    Show latest updates
   hot                       Show hot content
   movies                    List movies
@@ -49,6 +50,7 @@ Global options:
 
 Examples:
   ddys search 星际 --limit 5
+  ddys suggest 星际
   ddys latest --format json
   ddys movie i-robot
   ddys api GET /latest --query-param limit=3
@@ -60,6 +62,7 @@ Examples:
 function renderCommandHelp(command) {
   const map = {
     search: 'ddys search <keyword> [--type movie] [--limit 10] [--format table|json|text]',
+    suggest: 'ddys suggest <keyword> [--format table|json|text]',
     latest: 'ddys latest [--type movie] [--limit 10]',
     hot: 'ddys hot [--type movie] [--limit 10]',
     movies: 'ddys movies [--type movie] [--genre sci-fi] [--region US] [--page 1] [--per-page 24]',
@@ -75,7 +78,7 @@ function renderCommandHelp(command) {
 }
 
 export function renderCompletion(shell = 'bash') {
-  const commands = 'search latest hot movies movie sources related comments calendar types genres regions collections collection shares share requests activities user me create-request comment-create comment-delete report-invalid follow unfollow api doctor embed worker-env completion help version';
+  const commands = 'search suggest latest hot movies movie sources related comments calendar types genres regions collections collection shares share requests activities user me create-request comment-create comment-delete report-invalid follow unfollow api doctor embed worker-env completion help version';
   if (shell === 'zsh') {
     return `#compdef ddys\n_arguments '1:command:(${commands})' '*::arg:->args'\n`;
   }

@@ -2,6 +2,7 @@
 
 ```bash
 ddys search matrix --limit 5
+ddys suggest matrix
 ddys latest --format json
 ddys hot --type movie --limit 10
 ddys movie i-robot

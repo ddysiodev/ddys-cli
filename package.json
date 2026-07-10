@@ -1,6 +1,6 @@
 {
   "name": "ddys-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "低端影视 API 的官方命令行工具，用于搜索、调试、诊断和生成嵌入代码。",
   "license": "MIT",
   "type": "module",

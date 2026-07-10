@@ -1,4 +1,4 @@
-import { collectKeyValue, splitComma } from './args.js';
+import { collectKeyValue } from './args.js';
 import { DEFAULT_LIMIT, VERSION } from './constants.js';
 import { parsePositiveInteger } from './config.js';
 import { createDdysClient, encodePathSegment } from './client.js';
@@ -45,6 +45,8 @@ export function normalizeCommand(command) {
   const aliases = {
     s: 'search',
     find: 'search',
+    suggest: 'suggest',
+    suggestions: 'suggest',
     new: 'latest',
     newest: 'latest',
     popular: 'hot',
@@ -70,6 +72,11 @@ async function runApiCommand(command, args, options, client) {
       const q = options.query || args.join(' ');
       if (!q) throw new DdysUsageError('search requires a keyword.');
       return client.request(READ_METHOD, '/search', { query: withPagination(options, { q }) });
+    }
+    case 'suggest': {
+      const q = options.query || args.join(' ');
+      if (!q) throw new DdysUsageError('suggest requires a keyword.');
+      return client.request(READ_METHOD, '/suggest', { query: { q } });
     }
     case 'latest':
       return client.request(READ_METHOD, '/latest', { query: listQuery(options) });

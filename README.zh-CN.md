@@ -6,7 +6,7 @@
 
 ## 功能
 
-- 覆盖 search、latest、hot、movie、sources、related、comments、calendar、types、genres、regions、collections、shares、requests、activities、user、me 等读取命令。
+- 覆盖 search、suggest、latest、hot、movie、sources、related、comments、calendar、types、genres、regions、collections、shares、requests、activities、user、me 等读取命令。
 - 支持 create-request、comment-create、comment-delete、report-invalid、follow、unfollow 等需要鉴权的写命令。
 - `ddys api` 可调试任意 `/api/v1` 路径。
 - `ddys doctor` 可检查官方 API 或 Worker 代理健康状态。
@@ -33,6 +33,7 @@ node packages/cli/bin/ddys.js search matrix
 
 ```bash
 ddys search matrix --limit 5
+ddys suggest matrix
 ddys latest --format json
 ddys hot --type movie --limit 10
 ddys movie i-robot

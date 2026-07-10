@@ -23,6 +23,7 @@ function createFetch() {
     if (requestUrl.pathname.endsWith('/latest')) return jsonResponse({ success: true, data: [{ id: 1, title: 'Latest Movie', year: 2026, url: 'https://ddys.io/movie/latest' }] });
     if (requestUrl.pathname.endsWith('/hot')) return jsonResponse({ success: true, data: [{ id: 2, title: 'Hot Movie', type: 'movie' }] });
     if (requestUrl.pathname.endsWith('/search')) return jsonResponse({ success: true, data: [{ id: 3, title: 'Matrix', year: 1999, url: 'https://ddys.io/movie/matrix' }], meta: { total: 1 } });
+    if (requestUrl.pathname.endsWith('/suggest')) return jsonResponse({ success: true, data: [{ title: 'Matrix', slug: 'matrix' }] });
     if (requestUrl.pathname.endsWith('/types')) return jsonResponse({ success: true, data: [{ id: 'movie', title: 'Movie' }] });
     if (requestUrl.pathname.endsWith('/me')) return jsonResponse({ success: true, data: { username: 'tester' } });
     if (requestUrl.pathname.endsWith('/requests') && init.method === 'POST') return jsonResponse({ success: true, data: { id: 9, title: body.title } });
@@ -51,6 +52,15 @@ test('search command builds query and renders table output', async () => {
   assert.equal(result.stdout.includes('Matrix'), true);
   assert.equal(new URL(calls[0].url).searchParams.get('q'), 'matrix');
   assert.equal(new URL(calls[0].url).searchParams.get('limit'), '5');
+});
+
+test('suggest command calls suggestions endpoint with keyword', async () => {
+  const { fetchImpl, calls } = createFetch();
+  const result = await runCli(['suggest', 'matrix', '--format', 'json'], {}, { fetch: fetchImpl });
+  assert.equal(result.exitCode, 0);
+  assert.equal(JSON.parse(result.stdout)[0].title, 'Matrix');
+  assert.equal(calls[0].pathname.endsWith('/suggest'), true);
+  assert.equal(new URL(calls[0].url).searchParams.get('q'), 'matrix');
 });
 
 test('json output unwraps data while raw output keeps envelope', async () => {
@@ -102,9 +112,13 @@ test('embed, worker-env, completion, version, and help do not call API', async (
   const { fetchImpl, calls } = createFetch();
   assert.equal((await runCli(['embed', 'search', '--api-base', 'https://example.com/ddys-api'], {}, { fetch: fetchImpl })).stdout.includes('<ddys-search'), true);
   assert.equal((await runCli(['worker-env', '--format', 'env'], {}, { fetch: fetchImpl })).stdout.includes('DDYS_API_BASE='), true);
-  assert.equal((await runCli(['completion', 'powershell'], {}, { fetch: fetchImpl })).stdout.includes('Register-ArgumentCompleter'), true);
-  assert.match((await runCli(['version'], {}, { fetch: fetchImpl })).stdout, /^0\.1\.0/);
-  assert.equal((await runCli(['help'], {}, { fetch: fetchImpl })).stdout.includes('ddys search'), true);
+  const completion = await runCli(['completion', 'powershell'], {}, { fetch: fetchImpl });
+  assert.equal(completion.stdout.includes('Register-ArgumentCompleter'), true);
+  assert.equal(completion.stdout.includes('suggest'), true);
+  assert.match((await runCli(['version'], {}, { fetch: fetchImpl })).stdout, /^0\.1\.1/);
+  const help = await runCli(['help'], {}, { fetch: fetchImpl });
+  assert.equal(help.stdout.includes('ddys search'), true);
+  assert.equal(help.stdout.includes('ddys suggest'), true);
   assert.equal(calls.length, 0);
 });
 
