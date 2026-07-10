@@ -46,11 +46,11 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(JSON.stringify({ ok: true, package: 'ddys-cli', files: (await listFiles(root)).length }, null, 2));
+console.log(JSON.stringify({ ok: true, package: '@ddysiodev/ddys-cli', files: (await listFiles(root)).length }, null, 2));
 
 async function checkPackage() {
   const pkg = JSON.parse(await read('package.json'));
-  assert(pkg.name === 'ddys-cli', 'package name mismatch.');
+  assert(pkg.name === '@ddysiodev/ddys-cli', 'package name mismatch.');
   assert(/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(pkg.version), 'package version must be semver-like.');
   assert(pkg.type === 'module', 'package must be ESM.');
   assert(pkg.bin?.ddys === './bin/ddys.js', 'ddys bin missing.');

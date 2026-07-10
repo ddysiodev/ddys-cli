@@ -20,7 +20,7 @@ Official command-line tool for the DDYS API. It is meant for site owners and dev
 After publishing:
 
 ```bash
-npm install -g ddys-cli
+npm install -g @ddysiodev/ddys-cli
 ```
 
 Before publishing, run it from this repository:

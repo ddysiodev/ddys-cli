@@ -18,7 +18,7 @@ test('build outputs dist entry and declarations', async () => {
 
 test('package exposes ddys bin and safe publish files', async () => {
   const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
-  assert.equal(pkg.name, 'ddys-cli');
+  assert.equal(pkg.name, '@ddysiodev/ddys-cli');
   assert.equal(pkg.bin.ddys, './bin/ddys.js');
   assert.equal(pkg.exports['.'].import, './dist/index.js');
   assert.equal(pkg.files.includes('bin'), true);

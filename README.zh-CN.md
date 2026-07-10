@@ -20,7 +20,7 @@
 发布后：
 
 ```bash
-npm install -g ddys-cli
+npm install -g @ddysiodev/ddys-cli
 ```
 
 发布前可在本仓库中运行：
